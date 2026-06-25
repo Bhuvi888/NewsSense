@@ -1,0 +1,18 @@
+# Environment
+.env
+*.env
+
+# Python
+backend/.venv/
+__pycache__/
+*.py[cod]
+backend/newsense.db
+backend/chroma_data/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
