@@ -25,3 +25,28 @@ class IngestionResponse(BaseModel):
     articles_added: int
     duplicates_skipped: int
     errors: list[str]
+
+
+
+
+class ArticleListResponse(BaseModel):
+    id: str
+    title: str
+    source: str
+    source_url: str
+    published_at: datetime | None
+    category: str
+    author: str | None
+    summary: str | None
+    image_url: str | None
+
+    model_config = ConfigDict(from_attributes=True)
+
+class SourceResponse(BaseModel):
+    source: str
+    article_count: int
+    latest_article: datetime | None
+
+class TopicResponse(BaseModel):
+    topic: str
+    article_count: int

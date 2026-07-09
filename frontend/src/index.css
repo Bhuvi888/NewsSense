@@ -1,14 +1,99 @@
 @import "tailwindcss";
 
+@theme {
+  --color-paper: #F7F3EB;
+  --color-surface: #FFFCF7;
+  --color-border-news: #D8D2C7;
+  --color-headline: #111111;
+  --color-body-news: #444444;
+  --color-accent-news: #8B1E1E;
+
+  --font-serif: "Libre Baskerville", Georgia, serif;
+  --font-sans: "Inter", sans-serif;
+
+  --sidebar-width: 260px;
+}
+
 :root {
-  font-family: Inter, system-ui, sans-serif;
-  color: #f8fafc;
-  background: #0b0d10;
+  --paper: #F7F3EB;
+  --surface: #FFFCF7;
+  --border: #D8D2C7;
+  --headline: #111111;
+  --body: #444444;
+  --accent: #8B1E1E;
+  --sidebar-width: 260px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background: #0b0d10;
+  font-family: "Inter", sans-serif;
+  background: var(--paper);
+  color: var(--headline);
+  overflow-x: hidden;
+}
+
+/* Elegant Custom Scrollbars for Newspaper aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--paper);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C4BDB0;
+  border-radius: 4px;
+  border: 2px solid var(--paper);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A29A8C;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Print Drop Cap Typography helper */
+.newspaper-dropcap::first-letter {
+  float: left;
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 3.25rem;
+  line-height: 0.82;
+  padding-top: 4px;
+  padding-right: 8px;
+  padding-left: 2px;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+/* Font Smoothing & Newspaper rendering optimizations */
+html {
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility to ensure standard styles fit */
+.border-news {
+  border-color: var(--border);
 }
