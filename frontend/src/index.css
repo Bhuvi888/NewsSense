@@ -1,99 +1,113 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #F7F3EB;
-  --color-surface: #FFFCF7;
-  --color-border-news: #D8D2C7;
-  --color-headline: #111111;
-  --color-body-news: #444444;
-  --color-accent-news: #8B1E1E;
+  --color-primary: #850005;
+  --color-primary-container: #a8201a;
+  --color-on-primary: #ffffff;
+  --color-primary-fixed: #ffdad5;
+  --color-on-primary-fixed: #410001;
+  --color-on-primary-fixed-variant: #910b0b;
+  --color-surface: #fef9f0;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f8f3ea;
+  --color-surface-container: #f2ede4;
+  --color-surface-container-high: #ece8df;
+  --color-surface-container-highest: #e7e2d9;
+  --color-surface-dim: #ded9d1;
+  --color-surface-bright: #fef9f0;
+  --color-on-surface: #1d1c16;
+  --color-on-surface-variant: #5a413d;
+  --color-secondary: #5f5e5e;
+  --color-secondary-container: #e5e2e1;
+  --color-tertiary: #453f31;
+  --color-tertiary-container: #5d5647;
+  --color-outline: #8e706c;
+  --color-outline-variant: #e2beba;
 
-  --font-serif: "Libre Baskerville", Georgia, serif;
-  --font-sans: "Inter", sans-serif;
-
-  --sidebar-width: 260px;
+  --font-display-xl: "Playfair Display", Georgia, serif;
+  --font-display-lg: "Playfair Display", Georgia, serif;
+  --font-headline-lead: "Playfair Display", Georgia, serif;
+  --font-headline-section: "Playfair Display", Georgia, serif;
+  --font-label-stamp: "Playfair Display", Georgia, serif;
+  --font-body-regular: "Source Serif 4", Garamond, serif;
+  --font-body-dense: "Source Serif 4", Garamond, serif;
+  --font-body-lead: "Source Serif 4", Garamond, serif;
+  --font-label-dateline: "Source Serif 4", Garamond, serif;
+  --font-typewriter: "Special Elite", "Courier New", monospace;
 }
 
-:root {
-  --paper: #F7F3EB;
-  --surface: #FFFCF7;
-  --border: #D8D2C7;
-  --headline: #111111;
-  --body: #444444;
-  --accent: #8B1E1E;
-  --sidebar-width: 260px;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: "Inter", sans-serif;
-  background: var(--paper);
-  color: var(--headline);
-  overflow-x: hidden;
-}
-
-/* Elegant Custom Scrollbars for Newspaper aesthetic */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--paper);
-}
-
-::-webkit-scrollbar-thumb {
-  background: #C4BDB0;
-  border-radius: 4px;
-  border: 2px solid var(--paper);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #A29A8C;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #fef9f0;
+    color: #1d1c16;
+    font-family: "Source Serif 4", Georgia, serif;
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Print Drop Cap Typography helper */
-.newspaper-dropcap::first-letter {
+/* 1990s Broadsheet Rules and Textures */
+.newspaper-rule-heavy {
+  border-bottom: 3px solid #1d1c16;
+}
+
+.newspaper-rule-double {
+  border-top: 3px solid #1d1c16;
+  border-bottom: 1px solid #1d1c16;
+  padding-top: 2px;
+}
+
+.newspaper-rule-light {
+  border-bottom: 1px solid rgba(29, 28, 22, 0.25);
+}
+
+.newspaper-column-rule {
+  border-right: 1px solid rgba(29, 28, 22, 0.25);
+}
+
+.drop-cap::first-letter {
   float: left;
-  font-family: "Libre Baskerville", Georgia, serif;
-  font-size: 3.25rem;
-  line-height: 0.82;
+  font-family: "Playfair Display", serif;
+  font-size: 3.5rem;
+  line-height: 0.8;
   padding-top: 4px;
   padding-right: 8px;
-  padding-left: 2px;
-  font-weight: bold;
-  color: var(--accent);
+  padding-bottom: 4px;
+  font-weight: 900;
+  color: #1d1c16;
 }
 
-/* Font Smoothing & Newspaper rendering optimizations */
-html {
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Halftone Newsprint Filter */
+.newspaper-img {
+  filter: grayscale(90%) contrast(120%) sepia(15%);
+  transition: filter 0.3s ease;
 }
 
-/* Utility to ensure standard styles fit */
-.border-news {
-  border-color: var(--border);
+.newspaper-img:hover {
+  filter: grayscale(40%) contrast(110%) sepia(5%);
+}
+
+/* Torn paper edge effect */
+.torn-edge {
+  clip-path: polygon(
+    0% 0%, 
+    100% 0%, 
+    100% calc(100% - 6px), 
+    98% 100%, 96% calc(100% - 4px), 94% 100%, 92% calc(100% - 3px), 90% 100%,
+    88% calc(100% - 5px), 86% 100%, 84% calc(100% - 2px), 82% 100%, 80% calc(100% - 6px),
+    78% 100%, 76% calc(100% - 3px), 74% 100%, 72% calc(100% - 5px), 70% 100%,
+    68% calc(100% - 2px), 66% 100%, 64% calc(100% - 4px), 62% 100%, 60% calc(100% - 6px),
+    58% 100%, 56% calc(100% - 3px), 54% 100%, 52% calc(100% - 5px), 50% 100%,
+    48% calc(100% - 2px), 46% 100%, 44% calc(100% - 4px), 42% 100%, 40% calc(100% - 6px),
+    38% 100%, 36% calc(100% - 3px), 34% 100%, 32% calc(100% - 5px), 30% 100%,
+    28% calc(100% - 2px), 26% 100%, 24% calc(100% - 4px), 22% 100%, 20% calc(100% - 6px),
+    18% 100%, 16% calc(100% - 3px), 14% 100%, 12% calc(100% - 5px), 10% 100%,
+    8% calc(100% - 2px), 6% 100%, 4% calc(100% - 4px), 2% 100%, 0% calc(100% - 6px)
+  );
 }

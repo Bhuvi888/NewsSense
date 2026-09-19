@@ -50,3 +50,25 @@ class SourceResponse(BaseModel):
 class TopicResponse(BaseModel):
     topic: str
     article_count: int
+
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
+class AskRequest(BaseModel):
+    question: str
+    conversation_history: list[ChatMessage] | None = None
+
+
+class AskSourceResponse(BaseModel):
+    title: str
+    source: str
+    url: str
+    published_at: str
+
+
+class AskResponse(BaseModel):
+    answer: str
+    sources: list[AskSourceResponse]

@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes_news import router as news_router
 from app.api.routes_health import router as health_router
 from app.api.routes_ingestion import router as ingestion_router
+from app.api.routes_ask import router as ask_router
 from app.config import settings
 from app.database import Base, engine
 import app.models  # noqa: F401
@@ -36,3 +37,4 @@ app.include_router(
     news_router,
     prefix=settings.api_prefix,
 )
+app.include_router(ask_router, prefix=settings.api_prefix)

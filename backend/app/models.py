@@ -12,7 +12,8 @@ class Article(Base):
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
     title: Mapped[str] = mapped_column(String(500), nullable=False)
     source: Mapped[str] = mapped_column(String(120), nullable=False)
-    source_url: Mapped[str] = mapped_column(String(1000), unique=True, nullable=False)
+    # 768 utf8mb4 characters fit within InnoDB's 3072-byte index limit.
+    source_url: Mapped[str] = mapped_column(String(768), unique=True, nullable=False)
 
     published_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     category: Mapped[str] = mapped_column(String(100), nullable=False)

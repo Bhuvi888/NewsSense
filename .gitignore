@@ -8,6 +8,7 @@ __pycache__/
 *.py[cod]
 backend/newsense.db
 backend/chroma_data/
+.migration_runtime/
 
 # Node
 frontend/node_modules/

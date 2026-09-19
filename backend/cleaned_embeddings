@@ -1,0 +1,62 @@
+from app.database import SessionLocal
+from app.repositories.article_repository import ArticleRepository
+from app.services.vector_store import bge_vector_store
+
+
+def main():
+    db = SessionLocal()
+
+    try:
+        articles = ArticleRepository.get_all(db)
+
+        print("=" * 70)
+        print("BGE VECTOR STORE REBUILD")
+        print("=" * 70)
+
+        print(f"\nArticles in MySQL: {len(articles)}")
+
+        print("\nResetting BGE Chroma collection...")
+        bge_vector_store.reset_collection()
+
+        indexed = 0
+        errors = []
+
+        print("\nIndexing articles...")
+
+        for article in articles:
+            try:
+                bge_vector_store.index_article(article)
+                indexed += 1
+
+                if indexed % 25 == 0:
+                    print(f"Indexed {indexed}/{len(articles)}")
+
+            except Exception as error:
+                errors.append(
+                    f"{article.id}: {str(error)}"
+                )
+
+        print("\n" + "=" * 70)
+        print("REBUILD COMPLETE")
+        print("=" * 70)
+
+        print(f"MySQL articles: {len(articles)}")
+        print(f"Indexed:        {indexed}")
+        print(f"Errors:         {len(errors)}")
+
+        if errors:
+            print("\nErrors:")
+            for error in errors:
+                print(error)
+
+        print(
+            f"\nChroma BGE count: "
+            f"{bge_vector_store.collection.count()}"
+        )
+
+    finally:
+        db.close()
+
+
+if __name__ == "__main__":
+    main()
