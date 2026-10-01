@@ -16,6 +16,10 @@ engine_kwargs = {
 if settings.database_url.startswith("sqlite"):
     engine_kwargs["connect_args"] = {"check_same_thread": False}
 else:
+    if settings.database_ssl_ca:
+        engine_kwargs["connect_args"] = {
+            "ssl": {"ca": settings.database_ssl_ca}
+        }
     engine_kwargs.update(
         pool_size=settings.db_pool_size,
         max_overflow=settings.db_max_overflow,

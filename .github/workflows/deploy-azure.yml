@@ -1,0 +1,49 @@
+name: Build and deploy Newsense backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/deploy-azure.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AZURE_RESOURCE_GROUP: newsense-prod-sea
+  AZURE_ACR_NAME: newsenseacr260930sea
+  AZURE_ACR_LOGIN_SERVER: newsenseacr260930sea.azurecr.io
+  AZURE_API_APP: newsense-backend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build backend image in ACR
+        run: |
+          az acr build \
+            --registry "$AZURE_ACR_NAME" \
+            --image "newsense-backend:${GITHUB_SHA}" \
+            --image "newsense-backend:latest" \
+            backend
+
+      - name: Update backend API
+        run: |
+          az containerapp update \
+            --name "$AZURE_API_APP" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --image "$AZURE_ACR_LOGIN_SERVER/newsense-backend:${GITHUB_SHA}"

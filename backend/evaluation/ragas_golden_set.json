@@ -1,0 +1,57 @@
+[
+  {
+    "question": "What dates are the 'Chintan Baithak' of all Union ministers scheduled for according to the article?",
+    "reference": "September 23 and 24",
+    "reference_contexts": [
+      "It is being reported that the PM has convened a Chintan Baithak of all Union ministers on September 23 and 24."
+    ],
+    "article_id": "9a9aa1a36a79e4d04bc634e1c2ce1ced",
+    "article_title": "'Chintan' or ‘Chinta’ Baithak? Congress mocks PM Modi's Cabinet meeting, says criticism at 'unprecedented' level",
+    "source": "Mint Politics",
+    "category": "Politics"
+  },
+  {
+    "question": "What operation did India launch in May 2025 in retaliation for the terror attack in Pahalgam, Jammu and Kashmir?",
+    "reference": "Operation Sindoor",
+    "reference_contexts": [
+      "In May 2025, India had launched Operation Sindoor, targeting terror infrastructure in Pakistan and Pakistan-occupied Kashmir, in retaliation for the terror attack of April 22, 2025, in Pahalgam, Jammu and Kashmir, carried out by The Resistance Front, a proxy of the Pakistan-based terror group Lashkar-e-Taiba, in which 26 civilians, mostly tourists, were killed."
+    ],
+    "article_id": "f5b21be01f429a72e070c86a30d6c622",
+    "article_title": "Lack of understanding about cross-border terror concerns impacts bilateral ties: Jaishankar on India-U.S. relations",
+    "source": "The Hindu",
+    "category": "India"
+  },
+  {
+    "question": "What was the intraday high price reached by HAL shares on the NSE during the early morning trade on Wednesday?",
+    "reference": "₹4,695 per share",
+    "reference_contexts": [
+      "In the early morning trade on Wednesday, HAL share price remained the bulls' favourite despite a muted start and touched an intraday high of ₹4,695 per share on the NSE, logging an intraday gain of around 3%."
+    ],
+    "article_id": "e5fafd7dd79af65426fc556e268dbd2c",
+    "article_title": "Jefferies stock recommendation India: Multibagger defence stock jumps 600% in 5 years! Brokerage sees 43% more upside",
+    "source": "Mint Markets",
+    "category": "Business"
+  },
+  {
+    "question": "How many ghost plates were recorded per day on average at the test site just outside London near the Dartford Crossing?",
+    "reference": "More than 1,000 ghost plates per day on average",
+    "reference_contexts": [
+      "At one test site, just outside London near the Dartford Crossing, it has recorded an average of more than 1,000 of the ghost plates a day over several months."
+    ],
+    "article_id": "ec6c7349d7754b6b703fcaadd30da713",
+    "article_title": "Thousands of illegal ghost plates on cars revealed by new cameras",
+    "source": "BBC News",
+    "category": "World"
+  },
+  {
+    "question": "Which technology executives are expected to attend the AI summit hosted by President Trump at the White House on September 29?",
+    "reference": "Mark Zuckerberg, Dario Amodei, Jensen Huang, Greg Brockman, Sundar Pichai, and Elon Musk",
+    "reference_contexts": [
+      "The meeting is expected to include Meta CEO Mark Zuckerberg, Anthropic CEO Dario Amodei, Nvidia CEO Jensen Huang and OpenAI President Greg Brockman, while other technology executives including Google's Sundar Pichai and SpaceX's Elon Musk are also expected to attend, according to reports."
+    ],
+    "article_id": "947611b22580a664fdfdeef957bf51a2",
+    "article_title": "Trump’s AI summit with tech giants Zuckerberg, Musk, Pichai, Huang, Amodei — 5 things to watch",
+    "source": "Mint AI",
+    "category": "AI"
+  }
+]

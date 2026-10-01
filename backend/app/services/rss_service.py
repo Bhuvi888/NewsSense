@@ -33,49 +33,48 @@ RSS_FEEDS = [
         "category": "India",
         "url": "https://www.thehindu.com/news/national/feeder/default.rss",
     },
-    # Mint
-{
-    "name": "Mint Sports",
-    "category": "Sports",
-    "url": "https://www.livemint.com/rss/sports",
-},
-{
-    "name": "Mint Companies",
-    "category": "Business",
-    "url": "https://www.livemint.com/rss/companies",
-},
-{
-    "name": "Mint Markets",
-    "category": "Business",
-    "url": "https://www.livemint.com/rss/markets",
-},
-{
-    "name": "Mint Politics",
-    "category": "Politics",
-    "url": "https://www.livemint.com/rss/politics",
-},
-{
-    "name": "Mint Science",
-    "category": "Science",
-    "url": "https://www.livemint.com/rss/science",
-},
-{
-    "name": "Mint AI",
-    "category": "AI",
-    "url": "https://www.livemint.com/rss/AI",
-},
-{
-    "name": "Mint Technology",
-    "category": "Technology",
-    "url": "https://www.livemint.com/rss/technology",
-},
+    {
+        "name": "Mint Sports",
+        "category": "Sports",
+        "url": "https://www.livemint.com/rss/sports",
+    },
+    {
+        "name": "Mint Companies",
+        "category": "Business",
+        "url": "https://www.livemint.com/rss/companies",
+    },
+    {
+        "name": "Mint Markets",
+        "category": "Business",
+        "url": "https://www.livemint.com/rss/markets",
+    },
+    {
+        "name": "Mint Politics",
+        "category": "Politics",
+        "url": "https://www.livemint.com/rss/politics",
+    },
+    {
+        "name": "Mint Science",
+        "category": "Science",
+        "url": "https://www.livemint.com/rss/science",
+    },
+    {
+        "name": "Mint AI",
+        "category": "AI",
+        "url": "https://www.livemint.com/rss/AI",
+    },
+    {
+        "name": "Mint Technology",
+        "category": "Technology",
+        "url": "https://www.livemint.com/rss/technology",
+    },
 ]
 
 
 def make_article_id(url: str) -> str:
     return hashlib.sha256(
         url.encode("utf-8")
-    ).hexdigest()
+    ).hexdigest()[:32]
 
 
 def parse_published_at(
@@ -91,13 +90,13 @@ def parse_published_at(
         return None
 
     try:
-        parsed_date = parsedate_to_datetime(raw_date)
+        parsed_date = parsedate_to_datetime(
+            raw_date
+        )
 
         if parsed_date.tzinfo is None:
-            return (
-                parsed_date
-                .replace(tzinfo=timezone.utc)
-                .replace(tzinfo=None)
+            parsed_date = parsed_date.replace(
+                tzinfo=timezone.utc
             )
 
         return (
@@ -106,15 +105,22 @@ def parse_published_at(
             .replace(tzinfo=None)
         )
 
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return None
 
 
 def get_entry_content(entry: Any) -> str:
-    content_items = entry.get("content", [])
+
+    content_items = entry.get(
+        "content",
+        [],
+    )
 
     if content_items:
-        return content_items[0].get("value", "")
+        return content_items[0].get(
+            "value",
+            "",
+        )
 
     return (
         entry.get("summary", "")
@@ -122,7 +128,10 @@ def get_entry_content(entry: Any) -> str:
     )
 
 
-def fetch_feed(feed_config: dict[str, str]):
+def fetch_feed(
+    feed_config: dict[str, str],
+):
+
     headers = {
         "User-Agent": (
             "Newsense/0.1 RSS Reader "

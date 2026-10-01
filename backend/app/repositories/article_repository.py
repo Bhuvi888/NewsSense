@@ -151,3 +151,15 @@ class ArticleRepository:
         )
 
         return db.scalars(stmt).all()
+    
+    @staticmethod
+    def get_by_source_url(
+        db: Session,
+        source_url: str,
+    ) -> Article | None:
+
+        stmt = select(Article).where(
+            Article.source_url == source_url
+        )
+
+        return db.scalars(stmt).first()

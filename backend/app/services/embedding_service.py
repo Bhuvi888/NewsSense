@@ -48,6 +48,18 @@ class EmbeddingService:
             normalize_embeddings=True,
         ).tolist()
 
+    def embed_documents(
+        self,
+        texts: list[str],
+    ) -> list[list[float]]:
+        model = self._get_model()
+
+        return model.encode(
+            texts,
+            normalize_embeddings=True,
+            show_progress_bar=False,
+        ).tolist()
+
 
 embedding_service = EmbeddingService(
     "BAAI/bge-base-en-v1.5"
