@@ -1,10 +1,11 @@
-name: Build and deploy Newsense backend
+name: Build and deploy Newsense
 
 on:
   push:
     branches: [main]
     paths:
       - "backend/**"
+      - "frontend/**"
       - ".github/workflows/deploy-azure.yml"
   workflow_dispatch:
 
@@ -17,6 +18,8 @@ env:
   AZURE_ACR_NAME: newsenseacr260930sea
   AZURE_ACR_LOGIN_SERVER: newsenseacr260930sea.azurecr.io
   AZURE_API_APP: newsense-backend
+  AZURE_FRONTEND_APP: newsense-frontend
+  AZURE_API_BASE_URL: https://newsense-backend.jollypond-483f70d9.southeastasia.azurecontainerapps.io
 
 jobs:
   deploy:
@@ -47,3 +50,20 @@ jobs:
             --name "$AZURE_API_APP" \
             --resource-group "$AZURE_RESOURCE_GROUP" \
             --image "$AZURE_ACR_LOGIN_SERVER/newsense-backend:${GITHUB_SHA}"
+
+      - name: Build frontend image in ACR
+        run: |
+          az acr build \
+            --registry "$AZURE_ACR_NAME" \
+            --image "newsense-frontend:${GITHUB_SHA}" \
+            --image "newsense-frontend:latest" \
+            --build-arg "VITE_API_BASE=${AZURE_API_BASE_URL}/api" \
+            --build-arg "VITE_API_DOCS_URL=${AZURE_API_BASE_URL}/docs" \
+            frontend
+
+      - name: Update frontend web app
+        run: |
+          az containerapp update \
+            --name "$AZURE_FRONTEND_APP" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --image "$AZURE_ACR_LOGIN_SERVER/newsense-frontend:${GITHUB_SHA}"
