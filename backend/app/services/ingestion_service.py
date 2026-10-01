@@ -13,8 +13,10 @@ from app.services.article_cleaner import (
     word_count,
 )
 from app.services.article_extractor import article_extractor
+from app.services.image_service import resolve_image_url
 from app.services.rss_service import (
     RSS_FEEDS,
+    extract_entry_image,
     fetch_feed,
     make_article_id,
     parse_published_at,
@@ -102,6 +104,17 @@ class IngestionService:
             }
 
         # --------------------------------------------------
+        # Image resolution (validated URL, else placeholder)
+        # --------------------------------------------------
+
+        image_url = resolve_image_url(
+            [
+                extracted.image_url,
+                extract_entry_image(entry),
+            ]
+        )
+
+        # --------------------------------------------------
         # Create Article
         # --------------------------------------------------
 
@@ -118,7 +131,7 @@ class IngestionService:
             content_source="trafilatura",
             content_extracted_at=datetime.utcnow(),
             content_word_count=word_count(content),
-            image_url=None,
+            image_url=image_url,
             ingested_at=datetime.utcnow(),
         )
 

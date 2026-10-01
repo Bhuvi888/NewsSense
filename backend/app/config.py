@@ -27,6 +27,12 @@ class Settings(BaseSettings):
 
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
+    # General fallback image stored when an article has no valid image URL.
+    default_article_image: str = (
+        "https://images.unsplash.com/photo-1504711434969-e33886168f5c"
+        "?q=80&w=800&auto=format&fit=crop"
+    )
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

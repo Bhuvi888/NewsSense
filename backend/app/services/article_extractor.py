@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 import httpx
 import trafilatura
+from bs4 import BeautifulSoup
 
 
 @dataclass
@@ -9,6 +10,7 @@ class ExtractedArticle:
     content: str
     final_url: str
     status_code: int
+    image_url: str | None = None
 
 
 class ArticleExtractor:
@@ -50,6 +52,33 @@ class ArticleExtractor:
                 response.status_code,
             )
 
+    def extract_image_url(self, html: str) -> str | None:
+        """Pull the canonical hero image from Open Graph / Twitter meta tags."""
+        try:
+            soup = BeautifulSoup(html, "html.parser")
+
+            for key in (
+                "og:image",
+                "og:image:secure_url",
+                "twitter:image",
+                "twitter:image:src",
+            ):
+                tag = soup.find(
+                    "meta", attrs={"property": key}
+                ) or soup.find(
+                    "meta", attrs={"name": key}
+                )
+
+                content = tag.get("content") if tag else None
+
+                if content and content.strip():
+                    return content.strip()
+
+        except Exception as exc:
+            print(f"Image meta parsing failed: {exc}")
+
+        return None
+
     def extract(self, url: str) -> ExtractedArticle | None:
         try:
             html, final_url, status_code = self.fetch_html(url)
@@ -74,6 +103,7 @@ class ArticleExtractor:
                 content=content,
                 final_url=final_url,
                 status_code=status_code,
+                image_url=self.extract_image_url(html),
             )
 
         except Exception as exc:

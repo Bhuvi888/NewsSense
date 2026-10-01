@@ -128,6 +128,28 @@ def get_entry_content(entry: Any) -> str:
     )
 
 
+def extract_entry_image(entry: Any) -> str | None:
+    """Best-effort image URL from RSS media/thumbnail/enclosure tags."""
+
+    for item in entry.get("media_content", []) or []:
+        url = item.get("url")
+        if url:
+            return url
+
+    for item in entry.get("media_thumbnail", []) or []:
+        url = item.get("url")
+        if url:
+            return url
+
+    for enclosure in entry.get("enclosures", []) or []:
+        if "image" in (enclosure.get("type") or ""):
+            url = enclosure.get("href") or enclosure.get("url")
+            if url:
+                return url
+
+    return None
+
+
 def fetch_feed(
     feed_config: dict[str, str],
 ):
