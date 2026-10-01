@@ -125,7 +125,7 @@ export default function App() {
             <button onClick={() => setIsAskAIDrawerOpen(true)} className="hover:text-[#850005]">
               Telegraph AI Wire
             </button>
-            <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer" className="hover:text-[#850005]">
+            <a href={`${import.meta.env.VITE_API_DOCS_URL || 'http://localhost:8000/docs'}`} target="_blank" rel="noopener noreferrer" className="hover:text-[#850005]">
               API Documentation ↗
             </a>
           </div>

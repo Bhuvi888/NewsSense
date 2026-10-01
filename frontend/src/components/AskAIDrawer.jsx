@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { askAI } from '../services/api';
 
 export default function AskAIDrawer({ isOpen, onClose, prefillQuery = '', onSelectArticle }) {
@@ -132,7 +134,11 @@ export default function AskAIDrawer({ isOpen, onClose, prefillQuery = '', onSele
                 </div>
               ) : (
                 <div className="p-4 bg-white border border-[#1d1c16]/25 shadow-xs font-['Source_Serif_4'] text-[#1d1c16] leading-relaxed text-[15px]">
-                  <div className="whitespace-pre-wrap">{msg.content}</div>
+                  <div className="prose prose-sm max-w-none prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {msg.content}
+                    </ReactMarkdown>
+                  </div>
 
                   {/* Wire Citations */}
                   {msg.sources && msg.sources.length > 0 && (

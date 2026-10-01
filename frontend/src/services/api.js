@@ -3,7 +3,7 @@
  * Connects directly to the FastAPI server at /api (proxied via Vite or direct origin)
  */
 
-const API_BASE = '/api';
+const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 export async function fetchNews({ limit = 20, offset = 0, category = null, source = null, search = null } = {}) {
   const params = new URLSearchParams();
