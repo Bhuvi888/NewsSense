@@ -210,14 +210,31 @@ export default function HomeView({ onSelectArticle, activeCategory = 'all', onAs
                       <span className="font-bold text-[#850005]">{article.source}</span>
                       <span>{article.category || 'Wire'}</span>
                     </div>
-                    <h4 className="font-['Playfair_Display'] text-sm font-bold text-[#1d1c16] leading-snug group-hover:text-[#850005] transition-colors">
-                      {article.title}
-                    </h4>
-                    {article.summary && (
-                      <p className="text-[12px] font-['Source_Serif_4'] text-[#5a413d] line-clamp-2 mt-1">
-                        {article.summary}
-                      </p>
-                    )}
+                    <div className="flex items-start gap-3">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-['Playfair_Display'] text-sm font-bold text-[#1d1c16] leading-snug group-hover:text-[#850005] transition-colors">
+                          {article.title}
+                        </h4>
+                        {article.summary && (
+                          <p className="text-[12px] font-['Source_Serif_4'] text-[#5a413d] line-clamp-2 mt-1">
+                            {article.summary}
+                          </p>
+                        )}
+                      </div>
+                      {article.image_url && (
+                        <div className="w-16 h-16 shrink-0 border-2 border-[#1d1c16] bg-white p-0.5">
+                          <img
+                            src={article.image_url}
+                            alt={article.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover newspaper-img"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -269,6 +286,21 @@ export default function HomeView({ onSelectArticle, activeCategory = 'all', onAs
                 className="bg-[#f8f3ea] border border-[#1d1c16]/30 p-4 flex flex-col justify-between torn-edge hover:border-[#850005] transition-all cursor-pointer group"
                 onClick={() => onSelectArticle(article.id)}
               >
+                {article.image_url && (
+                  <div className="border-2 border-[#1d1c16] bg-white p-1.5 mb-3">
+                    <div className="relative w-full aspect-[16/9] bg-[#ece8df] overflow-hidden border border-[#1d1c16]/30">
+                      <img
+                        src={article.image_url}
+                        alt={article.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover newspaper-img"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
                 <div>
                   <div className="flex items-center justify-between text-[10px] font-['Playfair_Display'] uppercase font-bold text-[#850005] border-b border-[#1d1c16]/20 pb-1 mb-2">
                     <span>{article.source}</span>
