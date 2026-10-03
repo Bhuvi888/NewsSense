@@ -19,6 +19,7 @@ env:
   AZURE_ACR_LOGIN_SERVER: newsenseacr260930sea.azurecr.io
   AZURE_API_APP: newsense-backend
   AZURE_FRONTEND_APP: newsense-frontend
+  AZURE_INGESTION_JOB: newsense-ingestion-job
   AZURE_API_BASE_URL: https://newsense-backend.jollypond-483f70d9.southeastasia.azurecontainerapps.io
 
 jobs:
@@ -36,6 +37,10 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # ==========================================
+      # BACKEND
+      # ==========================================
+
       - name: Build backend image in ACR
         run: |
           az acr build \
@@ -50,6 +55,17 @@ jobs:
             --name "$AZURE_API_APP" \
             --resource-group "$AZURE_RESOURCE_GROUP" \
             --image "$AZURE_ACR_LOGIN_SERVER/newsense-backend:${GITHUB_SHA}"
+
+      - name: Update ingestion job
+        run: |
+          az containerapp job update \
+            --name "$AZURE_INGESTION_JOB" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --image "$AZURE_ACR_LOGIN_SERVER/newsense-backend:${GITHUB_SHA}"
+
+      # ==========================================
+      # FRONTEND
+      # ==========================================
 
       - name: Build frontend image in ACR
         run: |
