@@ -11,6 +11,10 @@ class Settings(BaseSettings):
     db_max_overflow: int = 10
     db_pool_recycle: int = 1800
     chroma_persist_directory: str = "./chroma_data"
+    chroma_host: str = ""
+    chroma_port: int = 8000
+    chroma_token: str = ""
+    chroma_ssl: bool = True
     vector_store_backend: str = "chroma"
     azure_search_endpoint: str = ""
     azure_search_api_key: str = ""

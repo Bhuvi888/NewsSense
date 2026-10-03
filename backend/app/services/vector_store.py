@@ -14,9 +14,21 @@ class ChromaVectorStore:
     def __init__(self, collection_name: str, embedding_service):
         self.embedding_service = embedding_service
         self.collection_name = collection_name
-        self.client = chromadb.PersistentClient(
-            path=settings.chroma_persist_directory
-        )
+        if settings.chroma_host:
+            client_kwargs = {
+                "host": settings.chroma_host,
+                "port": settings.chroma_port,
+                "ssl": settings.chroma_ssl,
+            }
+            if settings.chroma_token:
+                client_kwargs["headers"] = {
+                    "Authorization": f"Bearer {settings.chroma_token}"
+                }
+            self.client = chromadb.HttpClient(**client_kwargs)
+        else:
+            self.client = chromadb.PersistentClient(
+                path=settings.chroma_persist_directory
+            )
         self.collection = self.client.get_or_create_collection(
             name=collection_name,
             metadata={"hnsw:space": "cosine"},
