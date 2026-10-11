@@ -9,10 +9,10 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'https://newsense-backend.jollypond-483f70d9.southeastasia.azurecontainerapps.io',
         changeOrigin: true,
+        secure: true,
       },
     },
   },
 })
-

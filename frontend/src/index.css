@@ -15,14 +15,14 @@
   --color-surface-container-highest: #e7e2d9;
   --color-surface-dim: #ded9d1;
   --color-surface-bright: #fef9f0;
-  --color-on-surface: #1d1c16;
-  --color-on-surface-variant: #5a413d;
+  --color-on-surface: #141310;
+  --color-on-surface-variant: #3e3832;
   --color-secondary: #5f5e5e;
   --color-secondary-container: #e5e2e1;
   --color-tertiary: #453f31;
   --color-tertiary-container: #5d5647;
-  --color-outline: #8e706c;
-  --color-outline-variant: #e2beba;
+  --color-outline: #7a6a62;
+  --color-outline-variant: #d6c5bc;
 
   --font-display-xl: "Playfair Display", Georgia, serif;
   --font-display-lg: "Playfair Display", Georgia, serif;
@@ -41,8 +41,23 @@
     margin: 0;
     padding: 0;
     background-color: #fef9f0;
-    color: #1d1c16;
+    color: #141310;
     font-family: "Source Serif 4", Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Serif text: 1.7 line-height for readability */
+    line-height: 1.7;
+  }
+
+  /* Accessible focus-visible ring on all interactive elements */
+  *:focus-visible {
+    outline: 2px solid #850005;
+    outline-offset: 2px;
+  }
+
+  /* Remove default outline for mouse users, keep for keyboard */
+  *:focus:not(:focus-visible) {
+    outline: none;
   }
 }
 
@@ -52,48 +67,105 @@
   flex-direction: column;
 }
 
-/* 1990s Broadsheet Rules and Textures */
+/* ===== Accessibility: Skip to Content ===== */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background: #850005;
+  color: #fff;
+  padding: 12px 24px;
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: 2px solid #141310;
+  transition: top 0.15s ease;
+}
+
+.skip-to-content:focus {
+  top: 8px;
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===== Scrollbar: Clean horizontal mobile categories ===== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ===== 1990s Broadsheet Structural Rules ===== */
 .newspaper-rule-heavy {
-  border-bottom: 3px solid #1d1c16;
+  border-bottom: 3px solid #141310;
 }
 
 .newspaper-rule-double {
-  border-top: 3px solid #1d1c16;
-  border-bottom: 1px solid #1d1c16;
+  border-top: 3px solid #141310;
+  border-bottom: 1px solid #141310;
   padding-top: 2px;
 }
 
 .newspaper-rule-light {
-  border-bottom: 1px solid rgba(29, 28, 22, 0.25);
+  border-bottom: 1px solid rgba(20, 19, 16, 0.2);
 }
 
 .newspaper-column-rule {
-  border-right: 1px solid rgba(29, 28, 22, 0.25);
+  border-right: 1px solid rgba(20, 19, 16, 0.2);
 }
 
+/* ===== Prose: Line Length Control (60-80 chars) ===== */
+.prose-readable {
+  max-width: 65ch;
+  line-height: 1.75;
+}
+
+/* ===== Responsive Drop Cap ===== */
 .drop-cap::first-letter {
   float: left;
   font-family: "Playfair Display", serif;
-  font-size: 3.5rem;
-  line-height: 0.8;
-  padding-top: 4px;
+  font-size: 3.4rem;
+  line-height: 0.85;
+  padding-top: 2px;
   padding-right: 8px;
-  padding-bottom: 4px;
+  padding-bottom: 2px;
   font-weight: 900;
-  color: #1d1c16;
+  color: #141310;
 }
 
-/* Halftone Newsprint Filter */
+@media (max-width: 640px) {
+  .drop-cap::first-letter {
+    font-size: 2.6rem;
+    padding-right: 6px;
+    line-height: 0.9;
+  }
+}
+
+/* ===== Halftone Newsprint Image Filter ===== */
 .newspaper-img {
-  filter: grayscale(90%) contrast(120%) sepia(15%);
+  filter: grayscale(85%) contrast(115%) sepia(10%);
   transition: filter 0.3s ease;
 }
 
 .newspaper-img:hover {
-  filter: grayscale(40%) contrast(110%) sepia(5%);
+  filter: grayscale(20%) contrast(105%) sepia(5%);
 }
 
-/* Torn paper edge effect */
+/* ===== Torn Paper Edge Effect ===== */
 .torn-edge {
   clip-path: polygon(
     0% 0%, 
@@ -110,4 +182,69 @@
     18% 100%, 16% calc(100% - 3px), 14% 100%, 12% calc(100% - 5px), 10% 100%,
     8% calc(100% - 2px), 6% 100%, 4% calc(100% - 4px), 2% 100%, 0% calc(100% - 6px)
   );
+}
+
+/* ===== Mobile Touch Targets (Fitts's Law: 44×44px minimum) ===== */
+@media (max-width: 640px) {
+  /* All interactive elements get minimum touch area on mobile */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Navigation buttons need generous padding */
+  nav button, nav a {
+    min-height: 44px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* ===== Feedback States: Loading Pulse ===== */
+.loading-pulse {
+  animation: pulse-opacity 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-opacity {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== Skeleton Loading Placeholder ===== */
+.skeleton {
+  background: linear-gradient(90deg, #ece8df 25%, #f2ede4 50%, #ece8df 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 2px;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ===== Highlight Flash (for citation jump-to-source) ===== */
+.source-highlight {
+  animation: highlight-flash 2s ease-out;
+}
+
+@keyframes highlight-flash {
+  0% { background-color: rgba(133, 0, 5, 0.2); }
+  100% { background-color: transparent; }
+}
+
+/* ===== Screen Reader Only (Visually Hidden) ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

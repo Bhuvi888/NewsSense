@@ -33,12 +33,29 @@ export default function App() {
   };
 
   const handleAskAboutArticle = (article) => {
-    setPrefillAIQuery(`Summarize and verify the following dispatch from ${article.source}: "${article.title}"`);
+    setPrefillAIQuery(`What are the key takeaways from this story: "${article.title}"?`);
     setIsAskAIDrawerOpen(true);
   };
 
+  // Announce view changes to screen readers
+  const viewLabel = currentView === 'home' 
+    ? "Today's Edition" 
+    : currentView === 'archive' 
+      ? 'Archives' 
+      : 'Article';
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#fef9f0] text-[#1d1c16] font-['Source_Serif_4'] antialiased selection:bg-[#ffdad5] selection:text-[#410001]">
+    <div className="min-h-screen flex flex-col bg-[#fef9f0] text-[#141310] font-['Source_Serif_4'] antialiased selection:bg-[#ffdad5] selection:text-[#410001]">
+      {/* Skip to Content — Accessibility */}
+      <a href="#main-content" className="skip-to-content">
+        Skip to main content
+      </a>
+
+      {/* Screen reader: announce current view */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {viewLabel} — NewsSense
+      </div>
+
       {/* Top Broadsheet Masthead */}
       <Masthead
         currentView={currentView}
@@ -53,7 +70,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full">
+      <main id="main-content" className="flex-1 w-full" role="main">
         {currentView === 'home' && (
           <HomeView
             activeCategory={activeCategory}
@@ -78,7 +95,7 @@ export default function App() {
         )}
       </main>
 
-      {/* RAG "Ask AI" Telegraph Slide-Out Drawer */}
+      {/* WATCHER Slide-Out / Overlay Drawer */}
       <AskAIDrawer
         isOpen={isAskAIDrawerOpen}
         onClose={() => setIsAskAIDrawerOpen(false)}
@@ -86,49 +103,44 @@ export default function App() {
         onSelectArticle={handleSelectArticle}
       />
 
-      {/* Floating "Ask AI" Telegraph Seal Button */}
+      {/* Floating "Ask WATCHER" Button — 44×44px min touch target */}
       <button
         onClick={() => {
           setPrefillAIQuery('');
           setIsAskAIDrawerOpen(true);
         }}
-        title="Open Telegraph AI Research Desk"
-        className="fixed bottom-6 right-6 z-40 bg-[#850005] hover:bg-[#a8201a] text-white p-3.5 rounded-full shadow-2xl border-2 border-[#ffdad5] flex items-center gap-2 group transition-all hover:scale-105"
-        style={{
-          boxShadow: '0 10px 25px -5px rgba(133, 0, 5, 0.4), 0 8px 10px -6px rgba(133, 0, 5, 0.4)'
-        }}
+        title="Ask WATCHER"
+        aria-label="Open WATCHER AI assistant"
+        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 bg-[#850005] hover:bg-[#a8201a] active:scale-95 text-white min-h-[48px] min-w-[48px] p-3 sm:px-4 sm:py-3 rounded-full shadow-xl border-2 border-[#ffdad5] flex items-center gap-2 group transition-all hover:scale-105"
       >
-        <span className="material-symbols-outlined text-[24px]">psychology</span>
+        <span className="material-symbols-outlined text-[22px] sm:text-[24px]" aria-hidden="true">psychology</span>
         <span className="font-['Playfair_Display'] text-xs font-bold uppercase tracking-wider pr-1 hidden sm:inline">
-          Ask Telegraph AI
+          Ask WATCHER
         </span>
       </button>
 
       {/* Editorial Footer */}
-      <footer className="w-full border-t-2 border-[#1d1c16] bg-[#f8f3ea] py-8 px-4 md:px-10 mt-12 text-[#5a413d] text-xs">
+      <footer className="w-full border-t-2 border-[#141310] bg-[#f8f3ea] py-6 sm:py-8 px-4 sm:px-6 md:px-10 mt-12 text-[#3e3832] text-xs" role="contentinfo">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div>
-            <h4 className="font-['Playfair_Display'] font-black uppercase text-base text-[#1d1c16] tracking-wider">
-              The Newsense Chronicle & Syndicate
+            <h4 className="font-['Playfair_Display'] font-bold uppercase text-base text-[#141310] tracking-wider">
+              Newsense
             </h4>
-            <p className="font-['Source_Serif_4'] mt-0.5 text-[11px]">
-              Published daily via Neural Vector Retrieval • Linotype Edition • All rights reserved.
+            <p className="font-['Playfair_Display'] italic mt-0.5 text-xs text-[#3e3832]">
+              The Truth Leaves a Record.
             </p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 font-['Playfair_Display'] font-bold text-[11px] uppercase tracking-wider text-[#1d1c16]">
-            <button onClick={() => { setCurrentView('home'); setActiveCategory('all'); }} className="hover:text-[#850005]">
-              Front Page
+          <nav aria-label="Footer navigation" className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 font-['Playfair_Display'] font-bold text-[11px] uppercase tracking-wider text-[#141310]">
+            <button onClick={() => { setCurrentView('home'); setActiveCategory('all'); }} className="hover:text-[#850005] min-h-[44px] flex items-center transition-colors">
+              Today's Edition
             </button>
-            <button onClick={() => setCurrentView('archive')} className="hover:text-[#850005]">
-              Morgue Archives
+            <button onClick={() => setCurrentView('archive')} className="hover:text-[#850005] min-h-[44px] flex items-center transition-colors">
+              Archives
             </button>
-            <button onClick={() => setIsAskAIDrawerOpen(true)} className="hover:text-[#850005]">
-              Telegraph AI Wire
+            <button onClick={() => setIsAskAIDrawerOpen(true)} className="hover:text-[#850005] min-h-[44px] flex items-center transition-colors">
+              Ask WATCHER
             </button>
-            <a href={`${import.meta.env.VITE_API_DOCS_URL || 'http://localhost:8000/docs'}`} target="_blank" rel="noopener noreferrer" className="hover:text-[#850005]">
-              API Documentation ↗
-            </a>
-          </div>
+          </nav>
         </div>
       </footer>
     </div>
