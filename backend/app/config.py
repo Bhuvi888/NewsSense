@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     azure_search_api_key: str = ""
     azure_search_index_name: str = "newsense-articles-v2"
     azure_search_vector_dimensions: int = 768
+    qdrant_url: str = ""
+    qdrant_api_key: str = ""
+    qdrant_collection_name: str = "newsense_articles_bge"
     gemini_api_key: str = ""
     groq_api_key: str = ""
     groq_api_keys: str = ""

@@ -30,6 +30,7 @@ typing_extensions==4.15.0
 uvicorn==0.48.0
 sentence-transformers
 chromadb==0.6.3
+qdrant-client==1.19.1
 azure-search-documents>=11.6.0
 google-genai
 openai>=1.109.0

@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 import chromadb
 
@@ -333,9 +334,133 @@ class AzureSearchVectorStore:
             )
 
 
+class _QdrantCollectionCount:
+    def __init__(self, store: "QdrantVectorStore"):
+        self.store = store
+
+    def count(self) -> int:
+        return self.store.count()
+
+
+class QdrantVectorStore:
+    def __init__(self, collection_name: str, embedding_service):
+        if not settings.qdrant_url:
+            raise RuntimeError(
+                "QDRANT_URL is required when VECTOR_STORE_BACKEND=qdrant."
+            )
+
+        from qdrant_client import QdrantClient
+
+        self.embedding_service = embedding_service
+        self.collection_name = collection_name
+        self.client = QdrantClient(
+            url=settings.qdrant_url,
+            api_key=settings.qdrant_api_key or None,
+            timeout=30,
+        )
+        self.collection = _QdrantCollectionCount(self)
+
+    def _ensure_collection(self, dimensions: int) -> None:
+        from qdrant_client import models
+
+        if not self.client.collection_exists(self.collection_name):
+            self.client.create_collection(
+                collection_name=self.collection_name,
+                vectors_config=models.VectorParams(
+                    size=dimensions,
+                    distance=models.Distance.COSINE,
+                ),
+            )
+
+    def _build_chunks(self, article) -> list[str]:
+        return chunk_article(article.content) if article.content else []
+
+    def index_article(self, article) -> int:
+        chunks = self._build_chunks(article)
+        if not chunks:
+            raise ValueError(f"Article {article.id} has no content to index.")
+
+        from qdrant_client import models
+
+        embeddings = self.embedding_service.embed_documents(chunks)
+        self._ensure_collection(len(embeddings[0]))
+        published_str = (
+            article.published_at.isoformat() if article.published_at else ""
+        )
+        points = [
+            models.PointStruct(
+                id=str(uuid.uuid5(uuid.NAMESPACE_URL, f"{article.id}_chunk_{i}")),
+                vector=embeddings[i],
+                payload={
+                    "document": chunk,
+                    "article_id": str(article.id),
+                    "chunk_index": i,
+                    "title": article.title or "",
+                    "source": article.source or "",
+                    "source_url": article.source_url or "",
+                    "category": article.category or "",
+                    "published_at": published_str,
+                },
+            )
+            for i, chunk in enumerate(chunks)
+        ]
+        self.client.upsert(collection_name=self.collection_name, points=points)
+        return len(points)
+
+    def count(self) -> int:
+        if not self.client.collection_exists(self.collection_name):
+            return 0
+        return self.client.count(
+            collection_name=self.collection_name, exact=True
+        ).count
+
+    def search(
+        self,
+        query: str,
+        top_k: int = 10,
+        max_distance: float | None = None,
+    ) -> list[dict]:
+        if not self.client.collection_exists(self.collection_name):
+            return []
+
+        results = self.client.query_points(
+            collection_name=self.collection_name,
+            query=self.embedding_service.embed_query(query),
+            limit=top_k,
+            with_payload=True,
+        )
+
+        items = []
+        for point in results.points:
+            distance = 1.0 - float(point.score)
+            if max_distance is not None and distance > max_distance:
+                continue
+            payload = point.payload or {}
+            items.append(
+                {
+                    "chunk_id": str(point.id),
+                    "article_id": payload.get("article_id"),
+                    "chunk_index": payload.get("chunk_index"),
+                    "document": payload.get("document", ""),
+                    "distance": distance,
+                    "metadata": payload,
+                }
+            )
+        return items
+
+    def reset_collection(self) -> None:
+        if self.client.collection_exists(self.collection_name):
+            self.client.delete_collection(self.collection_name)
+
+
 if settings.vector_store_backend.lower() == "azure_search":
     vector_store = AzureSearchVectorStore(
         index_name=settings.azure_search_index_name,
+        embedding_service=embedding_service,
+    )
+elif settings.vector_store_backend.lower() == "qdrant":
+    vector_store = QdrantVectorStore(
+        collection_name=settings.qdrant_collection_name,
         embedding_service=embedding_service,
     )
 else:
